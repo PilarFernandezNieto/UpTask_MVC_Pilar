@@ -24,6 +24,20 @@ class Usuario extends ActiveRecord {
 
     }
 
+    public function validarLogin(){
+        if (!$this->email) {
+            self::$alertas["error"][] = "El email del usuario es obligatorio";
+        }
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$alertas["error"][] = "Email no válido";
+        }
+        if (!$this->password) {
+            self::$alertas["error"][] = "El password no puede estar vacío";
+        }
+
+        return self::$alertas;
+    }
+
     public function validarNuevaCuenta(){
         if(!$this->nombre){
             self::$alertas["error"][] = "El nombre del usuario es obligatorio";
@@ -49,6 +63,27 @@ class Usuario extends ActiveRecord {
 
     public function crearToken(){
         $this->token = uniqid();
+    }
+
+    public function validarEmail(){
+        if(!$this->email){
+            self::$alertas["error"][] = "El email es obligatorio";
+        }
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
+            self::$alertas["error"][] = "Email no válido";
+        }
+        return self::$alertas;
+    }
+
+    public function validarPassword(){
+        if (!$this->password) {
+            self::$alertas["error"][] = "El password no puede estar vacío";
+        }
+        if (strlen($this->password) < 6) {
+            self::$alertas["error"][] = "El password debe contener al menos 6 caracteres";
+        }
+        return self::$alertas;
+
     }
     
 
