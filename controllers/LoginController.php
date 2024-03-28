@@ -14,7 +14,6 @@ class LoginController {
 
         $router->render("auth/login", [
             "titulo" => "Iniciar sesión"
-
         ]);
     }
 
@@ -51,8 +50,9 @@ class LoginController {
                     $resultado = $usuario->guardar();         
                     
                     $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+                    $email->enviarConfirmacion();
 
-                    debuguear($email);
+                    
                     if($resultado){
                         header("Location: /mensaje");
                     }
@@ -95,9 +95,30 @@ class LoginController {
     }
 
     public static function confirmar(Router $router) {
-        $router->render("auth/confirmar", [
-            "titulo" => "Confirma tu cuenta"
+        $token = s($_GET["token"]);
 
+        if(!$token){
+            header("Location: /");
+        }
+
+        // Encontrar al usuario
+        $usuario = Usuario::where("token", $token);
+        if(empty($usuario)){
+            Usuario::setAlerta("error", "Token no válido");
+        } else {
+            $usuario->confirmado = 1;
+            unset($usuario->password2);
+            $usuario->token = null;
+
+            $usuario->guardar();
+            Usuario::setAlerta("exito", "Cuenta confirmada correctamente");
+        }
+        
+        $alertas = Usuario::getAlertas();
+
+        $router->render("auth/confirmar", [
+            "titulo" => "Confirma tu cuenta",
+            "alertas"=> $alertas
         ]);
     }
 }

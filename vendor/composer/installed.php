@@ -3,7 +3,7 @@
         'name' => 'pilar_fernandez/up-task_mvc',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '46ace29294968abb8e30b2003def0ecf38b476ff',
+        'reference' => 'de8c8db620c5ee22c6c895beedfbf2a3c157c315',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'pilar_fernandez/up-task_mvc' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '46ace29294968abb8e30b2003def0ecf38b476ff',
+            'reference' => 'de8c8db620c5ee22c6c895beedfbf2a3c157c315',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
