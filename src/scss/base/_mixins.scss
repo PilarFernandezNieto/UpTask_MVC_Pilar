@@ -24,8 +24,9 @@
     color: $colorTexto;
     font-size: 1.6rem;
     display: inline-block;
-    font-weight: 700;
+    // font-weight: 700;
     border: none;
+    border-radius: 3.75px;
     transition-property: background-color;
     transition-duration: .3s;
     text-align: center;
