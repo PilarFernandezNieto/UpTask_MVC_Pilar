@@ -3,7 +3,7 @@
  <div class="contenedor-sm">
     <?php include_once __DIR__ . "/../templates/alertas.php"; ?>
 
-    <form action="" class="formulario">
+    <form action="/crear-proyecto" method="POST" class="formulario">
 
         <?php include_once __DIR__ . "/formulario-proyecto.php"; ?>
 
