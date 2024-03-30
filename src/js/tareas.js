@@ -1,8 +1,42 @@
 // IIFE
 (function () {
+  obtenerTareas();
   // Botón para mostrar el modal de agregar tarea
   const nuevaTareaBtn = document.querySelector("#agregar-tarea");
   nuevaTareaBtn.addEventListener("click", mostrarFormulario);
+
+  async function obtenerTareas() {
+    try {
+      const proyectoUrl = obtenerProyecto();
+      const url = `/api/tareas?url=${proyectoUrl}`;
+      const respuesta = await fetch(url);
+      const resultado = await respuesta.json();
+      const {tareas} = resultado;
+      mostrarTareas(tareas);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  function mostrarTareas(tareas){
+    if(tareas.length === 0){
+        const contenedorTareas = document.querySelector("#listado-tareas");
+        const textoNoTareas = document.createElement("li");
+        textoNoTareas.textContent = "No hay tareas";
+        textoNoTareas.classList.add("no-tareas");
+        contenedorTareas.appendChild(textoNoTareas);
+        return;
+    }
+    tareas.forEach(tarea => {
+        const contenedorTarea = document.createElement("li");
+        contenedorTarea.dataset.tareaId = tarea.id;
+        contenedorTarea.classList.add("tarea");
+        const nombreTarea = document.createElement("p");
+        nombreTarea.textContent = tarea.nombre;
+
+        console.log(nombreTarea);
+    })
+  }
 
   function mostrarFormulario() {
     const modal = document.createElement("div");
@@ -50,48 +84,70 @@
 
     if (tarea === "") {
       // Alerta de error
-      mostrarAlerta("El nombre de la tarea es obligatorio", "error", document.querySelector(".formulario legend"));
+      mostrarAlerta(
+        "El nombre de la tarea es obligatorio",
+        "error",
+        document.querySelector(".formulario legend")
+      );
       return;
     }
-    agregarTarea(alerta);
+    agregarTarea(tarea);
   }
 
   function mostrarAlerta(mensaje, tipo, referencia) {
-
     const alertaPrevia = document.querySelector(".alerta");
-    if(alertaPrevia){
-        alertaPrevia.remove();
+    if (alertaPrevia) {
+      alertaPrevia.remove();
     }
     const alerta = document.createElement("div");
     alerta.classList.add("alerta", tipo);
     alerta.textContent = mensaje;
 
     // Inserta la alerta antes del legend
-    referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling);
+    referencia.parentElement.insertBefore(
+      alerta,
+      referencia.nextElementSibling
+    );
 
     setTimeout(() => {
-        alerta.remove();
+      alerta.remove();
     }, 5000);
   }
 
   // API
-  async function agregarTarea(tarea){
+  async function agregarTarea(tarea) {
     // Petición
     const datos = new FormData();
-    datos.append("nombre", "Pilar");
+    datos.append("nombre", tarea);
+    datos.append("proyectoId", obtenerProyecto());
 
     try {
-        const url = "http://localhost:3000/api/tarea";
-        const respuesta = await fetch(url, {
-            method: "post",
-            body: datos
-        });
-        console.log(respuesta);
+      const url = "http://localhost:3000/api/tarea";
+      const respuesta = await fetch(url, {
+        method: "post",
+        body: datos,
+      });
+      const resultado = await respuesta.json();
 
-    }catch(error){
-        console.log(error);
+      mostrarAlerta(
+        resultado.mensaje,
+        resultado.tipo,
+        document.querySelector(".formulario legend")
+      );
+      if (resultado.tipo === "exito") {
+        const modal = document.querySelector(".modal");
+        setTimeout(() => {
+          modal.remove();
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
-
+  function obtenerProyecto() {
+    const proyectoParams = new URLSearchParams(window.location.search);
+    const proyecto = Object.fromEntries(proyectoParams.entries());
+    return proyecto.url;
+  }
 })();

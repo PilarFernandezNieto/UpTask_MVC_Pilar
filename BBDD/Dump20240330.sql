@@ -30,7 +30,7 @@ CREATE TABLE `proyectos` (
   PRIMARY KEY (`id`),
   KEY `fk_usuario_proyecto_idx` (`propietarioId`),
   CONSTRAINT `fk_usuario_proyecto` FOREIGN KEY (`propietarioId`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `proyectos` (
 
 LOCK TABLES `proyectos` WRITE;
 /*!40000 ALTER TABLE `proyectos` DISABLE KEYS */;
-INSERT INTO `proyectos` VALUES (1,' Tienda Virtual','488b0e7107d3207474a5adf7d5981271',1),(3,' Nuevo Proyecto','15b5603fa95a17c47ba74ce2bcb27c27',1),(5,' Cartel concierto','53a4d08be54a91284a3b077e77a185df',1);
+INSERT INTO `proyectos` VALUES (1,' Tienda Virtual','488b0e7107d3207474a5adf7d5981271',1),(3,' Nuevo Proyecto','15b5603fa95a17c47ba74ce2bcb27c27',1),(5,' Cartel concierto','53a4d08be54a91284a3b077e77a185df',1),(6,' Web Cafe Loco','d78a078a08540941a9f2ef5d5d805e83',2);
 /*!40000 ALTER TABLE `proyectos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +58,7 @@ CREATE TABLE `tareas` (
   PRIMARY KEY (`id`),
   KEY `fk_tareas_proyectos_idx` (`proyectoId`),
   CONSTRAINT `fk_tareas_proyectos` FOREIGN KEY (`proyectoId`) REFERENCES `proyectos` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +67,7 @@ CREATE TABLE `tareas` (
 
 LOCK TABLES `tareas` WRITE;
 /*!40000 ALTER TABLE `tareas` DISABLE KEYS */;
+INSERT INTO `tareas` VALUES (2,' Buscar Hosting',0,1),(3,' Diseñar Logo',0,1),(4,' Diseño Logo',0,6),(5,' Comprar dominio',0,6),(6,' Comprar Dominio',0,3),(7,' Crear BBDD',0,3),(8,' Buscar Fotos',0,5);
 /*!40000 ALTER TABLE `tareas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +86,7 @@ CREATE TABLE `usuarios` (
   `token` varchar(15) DEFAULT NULL,
   `confirmado` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +95,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,' Pilar','correo@correo.com','$2y$10$1ecS833ICnPHDMwPkyes6ODDszo6gqpAMH5XolXmkYBTAppae98JG','',1);
+INSERT INTO `usuarios` VALUES (1,' Pilar','correo@correo.com','$2y$10$1ecS833ICnPHDMwPkyes6ODDszo6gqpAMH5XolXmkYBTAppae98JG','',1),(2,' Lola','lola@lola.com','$2y$10$JUT0NFNgLgzbcTc0pv40eepLF9CHUKXup4vqOaNUozz0e8unq4wgm','',1);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -107,4 +108,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-30 14:44:35
+-- Dump completed on 2024-03-30 22:12:18
