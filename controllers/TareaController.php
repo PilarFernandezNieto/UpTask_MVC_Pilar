@@ -25,6 +25,7 @@ class TareaController {
 
        echo json_encode(["tareas" => $tareas]);
     }
+    
     public static function crear() {
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
