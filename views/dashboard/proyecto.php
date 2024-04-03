@@ -6,6 +6,9 @@
          <button type="button" class="agregar-tarea" id="agregar-tarea">&#43; Nueva tarea
          </button>
      </div>
+     <ul class="listado-tareas" id="listado-tareas">
+
+     </ul>
  </div>
 
 
