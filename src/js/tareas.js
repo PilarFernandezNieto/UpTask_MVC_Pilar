@@ -6,6 +6,10 @@
   const nuevaTareaBtn = document.querySelector("#agregar-tarea");
   nuevaTareaBtn.addEventListener("click", mostrarFormulario);
 
+/**
+ * The function "obtenerTareas" asynchronously fetches tasks data from an API based on a project URL
+ * and then displays the tasks.
+ */
   async function obtenerTareas() {
     try {
       const proyectoUrl = obtenerProyecto();
@@ -19,6 +23,13 @@
       console.log(error);
     }
   }
+
+  /**
+   * La función muestra la lista de tareas de un proyecto con opción para cambiar su estado o borrarla.
+   * Muestra un mensaje si el proyecto no tiene tareas.
+   * @returns Muestra las tareas del proyecto si las hay o un mensaje en caso de no haberas.
+   * 
+   */
   function mostrarTareas(){
     console.log(tareas);
     if(tareas.length === 0){
@@ -64,10 +75,13 @@
         const listadoTareas = document.querySelector("#listado-tareas");
         listadoTareas.appendChild(contenedorTarea);
 
-        console.log(contenedorTarea);
+       
     })
   }
 
+/**
+ * Crea un modal con un formulario para añadir tareas a un proyecto.
+ */
   function mostrarFormulario() {
     const modal = document.createElement("div");
     modal.classList.add("modal");
@@ -124,6 +138,13 @@
     agregarTarea(tarea);
   }
 
+  /**
+   * Crea y muestra una alerta con un mensaje concreto, un tipo de mensaje (exito o error) y en un elemento concreto del html.
+   * La alerta desaparece a los 5 segundos.
+   * @param {string} mensaje - El mensaje que muestra la alerta
+   * @param {string} tipo - Éxito o Error. Añade la clase correspondiente para darle estilos
+   * @param {string referencia - El elemento html donde se va a añadir la alerta
+   */
   function mostrarAlerta(mensaje, tipo, referencia) {
     const alertaPrevia = document.querySelector(".alerta");
     if (alertaPrevia) {
@@ -145,6 +166,10 @@
   }
 
   // API
+/**
+ * Inserta una tarea en un proyecto existente mediante una llamada a la API y muestra una alerta basada en la respuesta
+ * @param {string} tarea - Nombre de la tarea que se va a añadir
+ */
   async function agregarTarea(tarea) {
     // Petición
     const datos = new FormData();
@@ -181,6 +206,11 @@
     }
   }
 
+/**
+ * Extrae la url del proyecto de la cadena de consulta de la url actual
+ * @returns {string} - El valor de la propiedad url del objeto Proyecto
+ * 
+ */
   function obtenerProyecto() {
     const proyectoParams = new URLSearchParams(window.location.search);
     const proyecto = Object.fromEntries(proyectoParams.entries());

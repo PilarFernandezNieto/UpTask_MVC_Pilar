@@ -34,6 +34,8 @@ class TareaController {
 
             $proyecto = Proyecto::where("url", $_POST["proyectoId"]);
 
+
+            // Comprobamos que existe un proyecto y que ese proyecto pertence a la persona logueada
             if (!$proyecto || $proyecto->propietarioId !== $_SESSION["id"]) {
                 $respuesta = [
                     "tipo" => "error",
@@ -43,12 +45,11 @@ class TareaController {
                 return;
             }
 
-            // OK. Instanciar y crear la tarea
+            // Si OK: Instanciar y crear la tarea
             $tarea = new Tarea($_POST);
 
-
             $tarea->proyectoId = $proyecto->id;
-
+          
             $resultado = $tarea->guardar();
 
             $respuesta = [
