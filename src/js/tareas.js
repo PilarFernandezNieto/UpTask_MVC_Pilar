@@ -1,15 +1,18 @@
 // IIFE
 (function () {
   obtenerTareas();
+
+  // Variable global para las tareas de un proyecto
   let tareas = [];
+
   // Botón para mostrar el modal de agregar tarea
   const nuevaTareaBtn = document.querySelector("#agregar-tarea");
   nuevaTareaBtn.addEventListener("click", mostrarFormulario);
 
-/**
- * The function "obtenerTareas" asynchronously fetches tasks data from an API based on a project URL
- * and then displays the tasks.
- */
+  /**
+   * The function "obtenerTareas" asynchronously fetches tasks data from an API based on a project URL
+   * and then displays the tasks.
+   */
   async function obtenerTareas() {
     try {
       const proyectoUrl = obtenerProyecto();
@@ -18,7 +21,6 @@
       const resultado = await respuesta.json();
       tareas = resultado.tareas;
       mostrarTareas();
-
     } catch (error) {
       console.log(error);
     }
@@ -28,60 +30,62 @@
    * La función muestra la lista de tareas de un proyecto con opción para cambiar su estado o borrarla.
    * Muestra un mensaje si el proyecto no tiene tareas.
    * @returns Muestra las tareas del proyecto si las hay o un mensaje en caso de no haberas.
-   * 
+   *
    */
-  function mostrarTareas(){
-    console.log(tareas);
-    if(tareas.length === 0){
-        const contenedorTareas = document.querySelector("#listado-tareas");
-        const textoNoTareas = document.createElement("li");
-        textoNoTareas.textContent = "No hay tareas";
-        textoNoTareas.classList.add("no-tareas");
-        contenedorTareas.appendChild(textoNoTareas);
-        return;
+  function mostrarTareas() {
+    limpiarTareas();
+    if (tareas.length === 0) {
+      const contenedorTareas = document.querySelector("#listado-tareas");
+      const textoNoTareas = document.createElement("li");
+      textoNoTareas.textContent = "No hay tareas";
+      textoNoTareas.classList.add("no-tareas");
+      contenedorTareas.appendChild(textoNoTareas);
+      return;
     }
 
     const estados = {
       0: "Pendiente",
-      1: "Completa"
-    }
-    tareas.forEach(tarea => {
-        const contenedorTarea = document.createElement("li");
-        contenedorTarea.dataset.tareaId = tarea.id;
-        contenedorTarea.classList.add("tarea");
-        const nombreTarea = document.createElement("p");
-        nombreTarea.textContent = tarea.nombre;
+      1: "Completa",
+    };
+    tareas.forEach((tarea) => {
+      const contenedorTarea = document.createElement("li");
+      contenedorTarea.dataset.tareaId = tarea.id;
+      contenedorTarea.classList.add("tarea");
+      const nombreTarea = document.createElement("p");
+      nombreTarea.textContent = tarea.nombre;
 
-        const opcionesDiv = document.createElement("div");
-        opcionesDiv.classList.add("opciones");
+      const opcionesDiv = document.createElement("div");
+      opcionesDiv.classList.add("opciones");
 
-        // Botones
-        const btnEstadoTarea = document.createElement("button");
-        btnEstadoTarea.classList.add("estado-tarea");
-        btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
-        btnEstadoTarea.textContent = estados[tarea.estado];
-        btnEstadoTarea.dataset.estadoTarea = tarea.estado;
+      // Botones
+      const btnEstadoTarea = document.createElement("button");
+      btnEstadoTarea.classList.add("estado-tarea");
+      btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
+      btnEstadoTarea.textContent = estados[tarea.estado];
+      btnEstadoTarea.dataset.estadoTarea = tarea.estado;
 
-        const btnEliminarTarea = document.createElement("button");
-        btnEliminarTarea.classList.add("eliminar-tarea");
-        btnEliminarTarea.dataset.idTarea = tarea.id;
-        btnEliminarTarea.textContent= "Eliminar";
+      btnEstadoTarea.ondblclick = function () {
+        cambiarEstadoTarea({ ...tarea });
+      };
 
-        opcionesDiv.appendChild(btnEstadoTarea);
-        opcionesDiv.appendChild(btnEliminarTarea);
-        contenedorTarea.appendChild(nombreTarea);
-        contenedorTarea.appendChild(opcionesDiv);
+      const btnEliminarTarea = document.createElement("button");
+      btnEliminarTarea.classList.add("eliminar-tarea");
+      btnEliminarTarea.dataset.idTarea = tarea.id;
+      btnEliminarTarea.textContent = "Eliminar";
 
-        const listadoTareas = document.querySelector("#listado-tareas");
-        listadoTareas.appendChild(contenedorTarea);
+      opcionesDiv.appendChild(btnEstadoTarea);
+      opcionesDiv.appendChild(btnEliminarTarea);
+      contenedorTarea.appendChild(nombreTarea);
+      contenedorTarea.appendChild(opcionesDiv);
 
-       
-    })
+      const listadoTareas = document.querySelector("#listado-tareas");
+      listadoTareas.appendChild(contenedorTarea);
+    });
   }
 
-/**
- * Crea un modal con un formulario para añadir tareas a un proyecto.
- */
+  /**
+   * Crea un modal con un formulario para añadir tareas a un proyecto.
+   */
   function mostrarFormulario() {
     const modal = document.createElement("div");
     modal.classList.add("modal");
@@ -166,10 +170,10 @@
   }
 
   // API
-/**
- * Inserta una tarea en un proyecto existente mediante una llamada a la API y muestra una alerta basada en la respuesta
- * @param {string} tarea - Nombre de la tarea que se va a añadir
- */
+  /**
+   * Inserta una tarea en un proyecto existente mediante una llamada a la API y muestra una alerta basada en la respuesta
+   * @param {string} tarea - Nombre de la tarea que se va a añadir
+   */
   async function agregarTarea(tarea) {
     // Petición
     const datos = new FormData();
@@ -198,22 +202,75 @@
 
         // Agregar el objeto de tarea al global de tareas
         const tareaObj = {
-         
-        }
+          id: String(resultado.id),
+          nombre: tarea,
+          estado: "0",
+          proyectoId: resultado.proyectoId,
+        };
+
+        tareas = [...tareas, tareaObj];
+        mostrarTareas();
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-/**
- * Extrae la url del proyecto de la cadena de consulta de la url actual
- * @returns {string} - El valor de la propiedad url del objeto Proyecto
- * 
- */
+  function cambiarEstadoTarea(tarea) {
+    const nuevoEstado = tarea.estado === "1" ? "0" : "1";
+    tarea.estado = nuevoEstado;
+
+    actualizarTarea(tarea);
+  }
+
+  async function actualizarTarea(tarea) {
+    const {estado, id, nombre, proyectoId} = tarea;
+    const datos = new FormData();
+    datos.append("id", id);
+    datos.append("nombre", nombre);
+    datos.append("estado", estado);
+    datos.append("proyectoId", obtenerProyecto()); // OJO AQUI. Envia la url del proyecto en vez de ID
+
+    // for(let valor of datos.values()){
+    //   console.log(valor);
+    // }
+
+    try {
+      const url = "http://localhost:3000/api/tarea/actualizar";
+      const respuesta = await fetch(url, {
+        method: "POST",
+        body: datos
+      });
+
+      const resultado = await respuesta.json();
+
+      if(resultado.respuesta.tipo === "exito"){
+        mostrarAlerta(resultado.respuesta.mensaje, resultado.respuesta.tipo, document.querySelector(".contenedor-nueva-tarea"));
+      }
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  /**
+   * Extrae la url del proyecto de la cadena de consulta de la url actual
+   * @returns {string} - El valor de la propiedad url del objeto Proyecto
+   *
+   */
   function obtenerProyecto() {
     const proyectoParams = new URLSearchParams(window.location.search);
     const proyecto = Object.fromEntries(proyectoParams.entries());
     return proyecto.url;
+  }
+
+  /**
+   * Limpia el listado de tareas antes de mostrarlas
+   */
+  function limpiarTareas() {
+    const listadoTareas = document.querySelector("#listado-tareas");
+    while (listadoTareas.firstChild) {
+      listadoTareas.removeChild(listadoTareas.firstChild);
+    }
   }
 })();

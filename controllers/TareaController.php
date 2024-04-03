@@ -34,7 +34,6 @@ class TareaController {
 
             $proyecto = Proyecto::where("url", $_POST["proyectoId"]);
 
-
             // Comprobamos que existe un proyecto y que ese proyecto pertence a la persona logueada
             if (!$proyecto || $proyecto->propietarioId !== $_SESSION["id"]) {
                 $respuesta = [
@@ -55,15 +54,45 @@ class TareaController {
             $respuesta = [
                 "tipo"=>"exito",
                 "id"=>$resultado["id"],
-                "mensaje" => "Tarea creada correctamente"
+                "mensaje" => "Tarea creada correctamente",
+                "proyectoId" => $proyecto->id
             ];
 
             echo json_encode($respuesta);
         }
     }
     public static function actualizar() {
+        session_start();
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $proyecto = Proyecto::where("url", $_POST["proyectoId"]);
+
+            // Comprobamos que existe un proyecto y que ese proyecto pertence a la persona logueada
+            if (!$proyecto || $proyecto->propietarioId !== $_SESSION["id"]) {
+                $respuesta = [
+                    "tipo" => "error",
+                    "mensaje" => "Hubo un error al actualizar la tarea"
+                ];
+                echo json_encode($respuesta);
+                return;
+            }
+
+            $tarea = new Tarea($_POST);
+            $tarea->proyectoId = $proyecto->id; // OJO AQUI. PROYECTOID VIENE COMO URL
+
+            $resultado = $tarea->guardar();
+
+            if($resultado){
+                $respuesta = [
+                    "tipo" => "exito",
+                    "id" => $tarea->id,
+                    "proyectoId" => $proyecto->id,
+                    "mensaje" => "Actualizado correctamente"
+                ];
+                echo json_encode(["respuesta" => $respuesta]);
+
+            }
+             
         }
     }
 
