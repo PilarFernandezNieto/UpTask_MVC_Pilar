@@ -72,6 +72,9 @@
       btnEliminarTarea.classList.add("eliminar-tarea");
       btnEliminarTarea.dataset.idTarea = tarea.id;
       btnEliminarTarea.textContent = "Eliminar";
+      btnEliminarTarea.ondblclick = function(){
+        confirmarEliminarTarea({...tarea});
+      }
 
       opcionesDiv.appendChild(btnEstadoTarea);
       opcionesDiv.appendChild(btnEliminarTarea);
@@ -246,6 +249,14 @@
 
       if(resultado.respuesta.tipo === "exito"){
         mostrarAlerta(resultado.respuesta.mensaje, resultado.respuesta.tipo, document.querySelector(".contenedor-nueva-tarea"));
+        tareas = tareas.map(tareaMemoria => {
+          if(tareaMemoria.id === id){
+            tareaMemoria.estado = estado;
+          } 
+          return tareaMemoria;
+        });
+        mostrarTareas();
+        
       }
 
     } catch(error){
@@ -253,6 +264,42 @@
     }
   }
 
+  function confirmarEliminarTarea(tarea){
+    Swal.fire({
+      title: "¿Eliminar Tarea?",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "No"
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        eliminarTarea(tarea);
+      } 
+    });
+  }
+
+  async function eliminarTarea(tarea){
+    const { estado, id, nombre } = tarea;
+    const datos = new FormData();
+    datos.append("id", id);
+    datos.append("nombre", nombre);
+    datos.append("estado", estado);
+    datos.append("proyectoId", obtenerProyecto()); // OJO AQUI. Envia la url del proyecto en vez de ID
+
+    try {
+      const url = "http://localhost:3000/api/tarea/eliminar";
+      const respuesta = await fetch(url, {
+        method: "POST",
+        body: datos
+      });
+      const resultado = await respuesta.json();
+      console.log(resultado);
+
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
   /**
    * Extrae la url del proyecto de la cadena de consulta de la url actual
    * @returns {string} - El valor de la propiedad url del objeto Proyecto
